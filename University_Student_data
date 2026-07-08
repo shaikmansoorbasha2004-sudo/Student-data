@@ -1,0 +1,186 @@
+# Student Management System
+
+students = []
+
+
+# ---------- Grade Function ----------
+def calculate_grade(avg):
+    if avg >= 90:
+        return "A+"
+    elif avg >= 80:
+        return "A"
+    elif avg >= 70:
+        return "B"
+    elif avg >= 60:
+        return "C"
+    elif avg >= 50:
+        return "D"
+    else:
+        return "F"
+
+
+# ---------- Add Student ----------
+def add_student():
+    roll = input("Enter Roll Number: ")
+
+    # Check duplicate roll number
+    for student in students:
+        if student["roll"] == roll:
+            print("Student already exists!\n")
+            return
+
+    name = input("Enter Student Name: ")
+
+    marks = []
+
+    for i in range(3):
+        mark = int(input("Enter Marks of Subject {}: ".format(i + 1)))
+        marks.append(mark)
+
+    total = sum(marks)
+    average = total / 3
+    grade = calculate_grade(average)
+
+    student = {
+        "roll": roll,
+        "name": name,
+        "marks": marks,
+        "total": total,
+        "average": average,
+        "grade": grade
+    }
+
+    students.append(student)
+
+    print("Student Added Successfully!\n")
+
+
+# ---------- Display Students ----------
+def display_students():
+    if len(students) == 0:
+        print("No Student Records Found.\n")
+        return
+
+    print("\n------ Student Records ------")
+
+    for s in students:
+        print("Roll Number :", s["roll"])
+        print("Name        :", s["name"])
+        print("Marks       :", s["marks"])
+        print("Total       :", s["total"])
+        print("Average     :", round(s["average"], 2))
+        print("Grade       :", s["grade"])
+        print("----------------------------")
+
+
+# ---------- Search Student ----------
+def search_student():
+    roll = input("Enter Roll Number: ")
+
+    for s in students:
+        if s["roll"] == roll:
+            print("\nStudent Found")
+            print("Roll Number :", s["roll"])
+            print("Name        :", s["name"])
+            print("Marks       :", s["marks"])
+            print("Total       :", s["total"])
+            print("Average     :", round(s["average"], 2))
+            print("Grade       :", s["grade"])
+            return
+
+    print("Student Not Found.\n")
+
+
+# ---------- Rank Students ----------
+def rank_students():
+    if len(students) == 0:
+        print("No Student Records.\n")
+        return
+
+    # Bubble Sort
+    ranked = students[:]
+
+    n = len(ranked)
+
+    for i in range(n):
+        for j in range(n - i - 1):
+            if ranked[j]["total"] < ranked[j + 1]["total"]:
+                ranked[j], ranked[j + 1] = ranked[j + 1], ranked[j]
+
+    print("\n------ Student Ranking ------")
+
+    rank = 1
+    for s in ranked:
+        print(rank, ".", s["name"], "- Total:", s["total"])
+        rank += 1
+
+
+# ---------- Report ----------
+def generate_report():
+    if len(students) == 0:
+        print("No Student Records.\n")
+        return
+
+    highest = students[0]
+    lowest = students[0]
+
+    total_average = 0
+
+    for s in students:
+        total_average += s["average"]
+
+        if s["total"] > highest["total"]:
+            highest = s
+
+        if s["total"] < lowest["total"]:
+            lowest = s
+
+    class_average = total_average / len(students)
+
+    print("\n========== REPORT ==========")
+    print("Total Students :", len(students))
+    print("Class Average  :", round(class_average, 2))
+    print("Topper         :", highest["name"], "-", highest["total"])
+    print("Lowest Scorer  :", lowest["name"], "-", lowest["total"])
+    print("============================\n")
+
+
+# ---------- Main Menu ----------
+while True:
+
+    print("""
+========= STUDENT MANAGEMENT SYSTEM =========
+
+1. Add Student
+2. Display Students
+3. Search Student
+4. Rank Students
+5. Generate Report
+6. Exit
+
+=============================================
+""")
+
+    choice = input("Enter Your Choice: ")
+
+    if choice == "1":
+        add_student()
+
+    elif choice == "2":
+        display_students()
+
+    elif choice == "3":
+        search_student()
+
+    elif choice == "4":
+        rank_students()
+
+    elif choice == "5":
+        generate_report()
+
+    elif choice == "6":
+        print("Thank You!")
+        break
+
+    else:
+        print("Invalid Choice!\n")
